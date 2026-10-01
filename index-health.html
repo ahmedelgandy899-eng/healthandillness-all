@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Nokhpa TEAM</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent:       #0d9488;
+  --accent-light: #14b8a6;
+  --accent-dark:  #0f766e;
+  --accent-glow:  rgba(13,148,136,0.2);
+  --bg:      #f8fafc;
+  --bg2:     #eef2f7;
+  --card:    #ffffff;
+  --text:    #1a2332;
+  --text2:   #4a5568;
+  --text3:   #718096;
+  --bc:      rgba(0,0,0,0.07);
+  --success: #16a34a;
+  --danger:  #dc2626;
+  --warn:    #0f766e;
+  --r:       16px;
+  --tr:      all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="dark"] {
+  --bg:   #0d1117; --bg2: #161b22; --card: #1c2333;
+  --text: #e6edf3; --text2: #b1bac4; --text3: #7d8590;
+  --bc:   rgba(255,255,255,0.08);
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; overflow-x: hidden;
+  transition: background .4s, color .4s;
+}
+
+/* PROGRESS TOP */
+#prog-bar {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 999;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  transition: width .2s;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 64px;
+  background: rgba(248,250,252,.93); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--bc); transition: var(--tr);
+}
+[data-theme="dark"] nav { background: rgba(13,17,23,.95); }
+
+.nav-back {
+  display: flex; align-items: center; gap: 7px;
+  color: var(--text2); text-decoration: none; font-size: 13px; font-weight: 700;
+  padding: 7px 13px; border-radius: 8px; border: 1px solid var(--bc);
+  background: var(--card); transition: var(--tr);
+}
+.nav-back:hover { color: var(--accent); border-color: var(--accent-glow); transform: translateX(3px); }
+.nav-brand { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 900; color: var(--text); }
+.nav-logo-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 900;
+}
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.theme-btn {
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--bc);
+  background: var(--card); cursor: pointer; font-size: 15px;
+  display: flex; align-items: center; justify-content: center; transition: var(--tr);
+}
+.theme-btn:hover { border-color: var(--accent); transform: rotate(20deg); }
+
+/* HERO BAND */
+.hero-band {
+  margin-top: 64px;
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent), var(--accent-light));
+  padding: 40px 24px 36px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero-band::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 600px 200px at 50% 100%, rgba(255,255,255,.12) 0%, transparent 70%);
+}
+.hero-band-icon {
+  width: 68px; height: 68px; border-radius: 20px;
+  background: rgba(255,255,255,.2); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; margin: 0 auto 14px; border: 1.5px solid rgba(255,255,255,.35);
+}
+.hero-band h1 { font-size: clamp(20px,4vw,30px); font-weight: 900; color: #fff; margin-bottom: 6px; }
+.hero-band p { font-size: 13px; color: rgba(255,255,255,.8); }
+.hero-band-meta {
+  display: flex; justify-content: center; gap: 24px; margin-top: 20px;
+  flex-wrap: wrap;
+}
+.meta-pill {
+  background: rgba(255,255,255,.18); backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,.3); border-radius: 50px;
+  padding: 6px 16px; font-size: 12px; font-weight: 700; color: #fff;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* EXAM SHELL */
+.shell { max-width: 560px; margin: 0 auto; padding: 24px 20px 80px; }
+
+/* STATS ROW */
+.stats-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px;
+}
+.stat-box {
+  background: var(--card); border: 1px solid var(--bc); border-radius: var(--r);
+  padding: 12px 10px; text-align: center;
+}
+.stat-box .val { font-size: 20px; font-weight: 900; }
+.stat-box .lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.stat-correct { color: var(--success); }
+.stat-wrong   { color: var(--danger); }
+.stat-remain  { color: var(--accent); }
+
+/* PROGRESS STRIP */
+.prog-strip {
+  background: var(--card); border: 1px solid var(--bc); border-radius: var(--r);
+  padding: 14px 16px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.prog-label { font-size: 13px; font-weight: 700; color: var(--text2); white-space: nowrap; }
+.prog-track { flex: 1; height: 8px; background: var(--bg2); border-radius: 8px; overflow: hidden; }
+.prog-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  border-radius: 8px; transition: width .4s;
+}
+.timer-badge {
+  min-width: 64px; height: 36px; border-radius: 18px;
+  background: var(--bg2); border: 1px solid var(--bc);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900; color: var(--text);
+  gap: 5px; padding: 0 12px; flex-shrink: 0;
+}
+.timer-badge.warn { color: var(--warn); border-color: rgba(217,119,6,.3); background: rgba(217,119,6,.08); }
+.timer-badge.danger { color: var(--danger); border-color: rgba(220,38,38,.3); background: rgba(220,38,38,.08); animation: pulse .8s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+/* QUESTION CARD */
+.q-card {
+  background: var(--card); border: 1px solid var(--bc);
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,.06);
+  transition: box-shadow .3s;
+}
+.q-header {
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  padding: 4px 18px 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.q-num {
+  background: rgba(255,255,255,.2); border-radius: 8px;
+  padding: 3px 10px; font-size: 11px; font-weight: 700; color: #fff;
+}
+.q-text {
+  padding: 22px 18px 14px; font-size: 15px; font-weight: 700; color: var(--text);
+  line-height: 1.65; border-bottom: 1px solid var(--bc);
+  text-align: left; direction: ltr;
+}
+.options { padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 10px; }
+
+/* OPTION */
+.opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-radius: 12px;
+  border: 1.5px solid var(--bc); background: var(--bg);
+  cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text);
+  transition: var(--tr); user-select: none;
+  direction: ltr; text-align: left;
+}
+.opt:hover:not(.disabled) {
+  border-color: var(--accent); background: var(--accent-glow);
+  transform: translateX(3px);
+}
+.opt-letter {
+  width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+  background: var(--bg2); border: 1px solid var(--bc);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 900; color: var(--text3);
+  transition: var(--tr);
+}
+.opt.correct {
+  border-color: var(--success); background: rgba(22,163,74,.08);
+}
+.opt.correct .opt-letter {
+  background: var(--success); color: #fff; border-color: var(--success);
+}
+.opt.wrong {
+  border-color: var(--danger); background: rgba(220,38,38,.07);
+}
+.opt.wrong .opt-letter {
+  background: var(--danger); color: #fff; border-color: var(--danger);
+}
+.opt.disabled { pointer-events: none; }
+
+/* FEEDBACK */
+.feedback-bar {
+  margin: 14px 18px; padding: 12px 16px; border-radius: 12px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 700;
+  animation: popIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn { from{transform:scale(.8);opacity:0} to{transform:scale(1);opacity:1} }
+.feedback-bar.ok { background: rgba(22,163,74,.1); color: var(--success); border: 1px solid rgba(22,163,74,.25); }
+.feedback-bar.no { background: rgba(220,38,38,.08); color: var(--danger); border: 1px solid rgba(220,38,38,.2); }
+.feedback-icon { font-size: 20px; }
+
+/* EXPLANATION */
+.explanation {
+  margin: 0 18px 14px; padding: 12px 14px;
+  background: rgba(var(--accent-rgb),.06);
+  border-radius: 10px; border-right: 3px solid var(--accent);
+  font-size: 13px; color: var(--text2); line-height: 1.6;
+  display: none;
+}
+
+/* NAV BTNS */
+.nav-btns { padding: 4px 18px 18px; display: flex; gap: 10px; }
+.btn {
+  flex: 1; padding: 13px; border: none; border-radius: 12px;
+  font-size: 14px; font-weight: 900; cursor: pointer;
+  font-family: 'Outfit', sans-serif; transition: var(--tr);
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.btn-next {
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  color: #fff; box-shadow: 0 4px 14px var(--accent-glow);
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+.btn-skip {
+  background: var(--bg2); color: var(--text2); border: 1px solid var(--bc); flex: 0 0 auto; padding: 13px 18px;
+}
+.btn-skip:hover { border-color: var(--warn); color: var(--warn); }
+
+/* ===== RESULTS ===== */
+.result-hero {
+  text-align: center; padding: 36px 20px 28px;
+  background: var(--card); border-radius: 20px;
+  border: 1px solid var(--bc); margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.06);
+}
+.score-ring {
+  width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; border: 5px solid var(--bg2);
+  position: relative;
+}
+.score-ring svg { position: absolute; inset: -5px; width: calc(100% + 10px); height: calc(100% + 10px); transform: rotate(-90deg); }
+.score-ring circle { fill: none; stroke-width: 5; stroke-linecap: round; }
+.ring-bg { stroke: var(--bg2); }
+.ring-fill { stroke: var(--accent); transition: stroke-dashoffset 1s ease; }
+.score-num { font-size: 28px; font-weight: 900; color: var(--text); }
+.score-pct { font-size: 12px; color: var(--text3); }
+.result-grade { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+.result-sub { font-size: 14px; color: var(--text2); }
+.result-stats {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 20px;
+}
+.rs { background: var(--bg2); border-radius: 10px; padding: 12px 8px; text-align: center; }
+.rs .n { font-size: 20px; font-weight: 900; }
+.rs .l { font-size: 11px; color: var(--text3); }
+
+/* REPORT ITEMS */
+.report-item {
+  background: var(--card); border: 1px solid var(--bc); border-radius: 14px;
+  padding: 16px; margin-bottom: 10px; border-right: 4px solid var(--bc);
+}
+.report-item.ok { border-right-color: var(--success); }
+.report-item.no { border-right-color: var(--danger); }
+.report-item .ri-q { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.report-item .ri-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; margin-top: 5px; color: var(--text2);
+}
+.ri-badge {
+  padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; flex-shrink: 0;
+}
+.ri-yours { background: rgba(220,38,38,.1); color: var(--danger); }
+.ri-right { background: rgba(22,163,74,.1); color: var(--success); }
+
+.result-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.btn-retry { background: linear-gradient(135deg, var(--accent-dark), var(--accent)); color: #fff; }
+.btn-retry:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+.btn-home { background: var(--bg2); color: var(--text); border: 1px solid var(--bc); }
+.btn-home:hover { border-color: var(--accent); color: var(--accent); }
+
+/* FOOTER */
+footer {
+  background: var(--bg2); border-top: 1px solid var(--bc);
+  padding: 22px 24px; display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+.footer-brand { font-size: 14px; font-weight: 700; }
+.footer-brand span { color: var(--accent); }
+.footer-tg { display: flex; align-items: center; gap: 5px; text-decoration: none; color: #229ED9; font-size: 12px; font-weight: 600; }
+
+@media (max-width: 480px) {
+  nav { padding: 0 14px; }
+  .shell { padding: 16px 14px 60px; }
+  .nav-brand span { display: none; }
+  .hero-band { padding: 30px 16px 28px; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog-bar" style="width:0%"></div>
+
+<nav>
+  <a href="https://Nokhpa TEAM.io/exam/Fundamental Nursing/index.html" class="nav-back"><i class="fa-solid fa-arrow-right"></i> رجوع</a>
+  <div class="nav-brand">
+    <div class="nav-logo-icon">NP</div>
+    <span>Nokhpa TEAM</span>
+  </div>
+  <div class="nav-right">
+    <button class="theme-btn" id="themeBtn">💉</button>
+  </div>
+</nav>
+
+<div class="hero-band">
+  <div class="hero-band-icon">💉</div>
+  <h1>Fundamental Nursing</h1>
+  <p>Health and illness</p>
+  <div class="hero-band-meta">
+    <div class="meta-pill"><i class="fa-solid fa-list-ol"></i> <span id="totalBadge">-- سؤال</span></div>
+    <div class="meta-pill"><i class="fa-solid fa-clock"></i> 35 Min</div>
+    <div class="meta-pill"><i class="fa-solid fa-shuffle"></i> Shuffled</div>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="val stat-correct" id="sCorrect">0</div>
+      <div class="lbl">✔ صح</div>
+    </div>
+    <div class="stat-box">
+      <div class="val stat-wrong" id="sWrong">0</div>
+      <div class="lbl">✖ خطأ</div>
+    </div>
+    <div class="stat-box">
+      <div class="val stat-remain" id="sRemain">--%</div>
+      <div class="lbl">⏳ متبقي</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS STRIP -->
+  <div class="prog-strip">
+    <div class="prog-label" id="progLabel">سؤال ١</div>
+    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    <div class="timer-badge" id="timerBadge"><i class="fa-regular fa-clock"></i> <span id="timerTxt">35:00</span></div>
+  </div>
+
+  <!-- APP -->
+  <div id="app"></div>
+</div>
+
+<footer>
+  <div class="footer-brand">Nokhpa <span>TEAM</span></div>
+  </a>
+</footer>
+
+<script>
+const QUESTIONS = [
+// --- EASY: Knowledge ---
+{
+  t: "Why is it difficult to establish a standard definition of health and illness?",
+  o: ["Health is always the same for everyone", "Each person may have an individual definition that can change across the continuum", "Health depends only on disease", "Health is determined only by age"],
+  a: 1
+},
+{
+  t: "Which term is defined as a pathological change in structure and/or function?",
+  o: ["Health", "Illness", "Disease", "Wellness"],
+  a: 2
+},
+{
+  t: "Illness is best described as:",
+  o: ["A pathological change in body structure", "A person's response to disease based on perception of symptoms", "A state of complete physical well-being", "The absence of disease"],
+  a: 1
+},
+{
+  t: "Wellness refers to a status in which the individual is capable of:",
+  o: ["Avoiding all diseases", "Meeting minimum physical, psychological, and social requirements of appropriate function", "Preventing genetic disorders", "Avoiding medical treatment"],
+  a: 1
+},
+{
+  t: "According to the WHO definition presented in the lecture, health is:",
+  o: ["The absence of disease only", "Complete physical, mental, and social well-being", "Complete physical fitness", "The ability to work normally"],
+  a: 1
+},
+{
+  t: "Which of the following is NOT included in the WHO definition of health given in the lecture?",
+  o: ["Physical well-being", "Mental well-being", "Social well-being", "Economic well-being"],
+  a: 3
+},
+{
+  t: "Potter and Perry describe health as:",
+  o: ["A fixed state", "A dynamic state in which the individual adapts to environmental changes", "The absence of illness", "A permanent condition"],
+  a: 1
+},
+{
+  t: "According to Potter and Perry, the individual adapts to changes in:",
+  o: ["Internal environment only", "External environment only", "Both internal and external environments", "Social environment only"],
+  a: 2
+},
+{
+  t: "The dynamic nature of health means that:",
+  o: ["Health cannot change", "Health may change from time to time", "Disease is always permanent", "Wellness is unrelated to adaptation"],
+  a: 1
+},
+{
+  t: "The Agent–Host–Environment model primarily describes:",
+  o: ["The causes of illness", "The stages of rehabilitation", "The stages of recovery", "The dimensions of wellness"],
+  a: 0
+},
+{
+  t: "The Agent–Host–Environment model is used primarily in:",
+  o: ["Promoting wellness", "Predicting illness", "Rehabilitation", "Health education"],
+  a: 1
+},
+{
+  t: "Which three elements form the Agent–Host–Environment model?",
+  o: ["Disease, illness, wellness", "Agent, host, environment", "Physical, mental, social", "Primary, secondary, tertiary"],
+  a: 1
+},
+{
+  t: "The Health–Illness Continuum is used to:",
+  o: ["Identify the cause of illness", "Measure a person's level of health", "Identify genetic defects", "Determine mortality"],
+  a: 1
+},
+{
+  t: "The Health–Illness Continuum views health as:",
+  o: ["A fixed condition", "A constantly changing state", "A permanent condition", "A condition caused only by disease"],
+  a: 1
+},
+{
+  t: "Dunn's High-Level Wellness Model encourages the nurse to:",
+  o: ["Focus only on disease", "Care for the total person", "Focus only on symptoms", "Focus only on physical health"],
+  a: 1
+},
+{
+  t: "Dunn's model is oriented toward:",
+  o: ["Maximizing the potential of the individual", "Treating acute illness only", "Preventing congenital disorders", "Measuring mortality"],
+  a: 0
+},
+{
+  t: "Which factor belongs to the physical dimension?",
+  o: ["Culture", "Genetic inheritance", "Housing", "Educational background"],
+  a: 1
+},
+{
+  t: "Long-term stress affecting body systems is associated with the:",
+  o: ["Physical dimension", "Emotional dimension", "Intellectual dimension", "Environmental dimension"],
+  a: 1
+},
+{
+  t: "Cognitive abilities, educational background, and past experiences belong to the:",
+  o: ["Physical dimension", "Emotional dimension", "Intellectual dimension", "Sociocultural dimension"],
+  a: 2
+},
+{
+  t: "Housing, sanitation, climate, and pollution belong to the:",
+  o: ["Physical dimension", "Environmental dimension", "Emotional dimension", "Intellectual dimension"],
+  a: 1
+},
+{
+  t: "Economic level, family, and culture are mainly related to the:",
+  o: ["Physical dimension", "Emotional dimension", "Sociocultural dimension", "Intellectual dimension"],
+  a: 2
+},
+{
+  t: "Which level of prevention focuses on health promotion and specific protection?",
+  o: ["Primary prevention", "Secondary prevention", "Tertiary prevention", "Rehabilitation"],
+  a: 0
+},
+{
+  t: "Which is an example of primary prevention?",
+  o: ["Providing wound care", "Immunization", "Giving medications", "ROM exercises"],
+  a: 1
+},
+{
+  t: "Family planning is classified as:",
+  o: ["Primary prevention", "Secondary prevention", "Tertiary prevention", "Treatment"],
+  a: 0
+},
+{
+  t: "Teaching breast self-examination is classified as:",
+  o: ["Primary prevention", "Secondary prevention", "Tertiary prevention", "Rehabilitation"],
+  a: 0
+},
+{
+  t: "Accident prevention education is an example of:",
+  o: ["Primary prevention", "Secondary prevention", "Tertiary prevention", "Terminal care"],
+  a: 0
+},
+{
+  t: "Secondary prevention focuses mainly on:",
+  o: ["Health promotion only", "Early detection and prompt intervention", "Rehabilitation only", "Maximizing individual potential"],
+  a: 1
+},
+{
+  t: "Which activity is listed as secondary prevention?",
+  o: ["Immunization", "Providing wound care", "Family planning", "Accident prevention education"],
+  a: 1
+},
+{
+  t: "Assessing normal growth and development in children is listed under:",
+  o: ["Primary prevention", "Secondary prevention", "Tertiary prevention", "Terminal care"],
+  a: 1
+},
+{
+  t: "Encouraging regular medical and dental screening is an example of:",
+  o: ["Primary prevention", "Secondary prevention", "Tertiary prevention", "Rehabilitation"],
+  a: 1
+},
+{
+  t: "Tertiary prevention begins:",
+  o: ["Before disease develops", "After diagnosis and treatment of illness", "Before symptoms appear", "During exposure to an agent"],
+  a: 1
+},
+{
+  t: "The major focus of tertiary prevention is:",
+  o: ["Specific protection", "Early detection", "Rehabilitation and gradual resumption of functions", "Disease prediction"],
+  a: 2
+},
+{
+  t: "For a patient after mastectomy, tertiary nursing care may focus on:",
+  o: ["Immunization", "Maintaining self-esteem and providing support", "Family planning", "Disease screening"],
+  a: 1
+},
+{
+  t: "Which of the following is listed as a cause of disease?",
+  o: ["Inherited genetic defects", "Family culture only", "Educational background", "Health beliefs"],
+  a: 0
+},
+{
+  t: "Developmental defects may result from exposure during pregnancy to:",
+  o: ["Viruses or chemicals", "Family values", "Educational factors", "Lifestyle only"],
+  a: 0
+},
+{
+  t: "Which is listed as a physical agent that may cause disease?",
+  o: ["Culture", "Temperature", "Education", "Family"],
+  a: 1
+},
+{
+  t: "Physiologic and emotional reactions to ______ are listed as causes of disease.",
+  o: ["Age", "Stress", "Culture", "Education"],
+  a: 1
+},
+{
+  t: "Excessive or insufficient production of which substances may contribute to disease?",
+  o: ["Hormones and enzymes", "Water and oxygen", "Vitamins only", "Antibodies only"],
+  a: 0
+},
+{
+  t: "Which characteristic best describes acute illness?",
+  o: ["Slow onset and long duration", "Rapid onset and relatively short duration", "Permanent change", "Long-term support"],
+  a: 1
+},
+{
+  t: "According to the lecture, acute illness generally lasts:",
+  o: ["More than 3 months", "3 months or less", "More than 1 year", "Indefinitely"],
+  a: 1
+},
+{
+  t: "Which combination is characteristic of acute illness?",
+  o: ["Slow onset and less severe symptoms", "Sudden appearance and severe symptoms", "Permanent change and long-term support", "Slow onset and irreversible alterations"],
+  a: 1
+},
+{
+  t: "An acute illness may result in:",
+  o: ["Only complete recovery", "Only death", "Complete recovery, death, or development into chronic disease", "Only permanent disability"],
+  a: 2
+},
+{
+  t: "If acute appendicitis is not treated on time, it may become life-threatening and result in:",
+  o: ["Wellness", "Septic shock", "Rehabilitation", "Congenital disorder"],
+  a: 1
+},
+{
+  t: "Which characteristic is most consistent with chronic illness?",
+  o: ["Sudden onset", "Duration greater than 3 months", "Always severe symptoms", "Immediate recovery"],
+  a: 1
+},
+{
+  t: "Chronic illness generally has:",
+  o: ["Rapid onset", "Slow onset", "Sudden appearance", "No symptoms"],
+  a: 1
+},
+{
+  t: "Chronic illness may cause:",
+  o: ["Irreversible alterations in normal anatomy and physiology", "Immediate complete recovery", "Only temporary changes", "No need for support"],
+  a: 0
+},
+{
+  t: "Chronic illness may require:",
+  o: ["Only emergency treatment", "Special education for rehabilitation and long-term care or support", "No patient education", "Only preventive care"],
+  a: 1
+},
+{
+  t: "Which is an example of chronic illness mentioned in the lecture?",
+  o: ["Acute appendicitis", "Diabetes mellitus", "Acute pneumonia", "Simple diarrhea"],
+  a: 1
+},
+{
+  t: "Which factor can influence illness behaviors?",
+  o: ["Age", "Only disease severity", "Only genetics", "Only symptoms"],
+  a: 0
+},
+{
+  t: "The first stage of illness is called:",
+  o: ["Assuming sick role", "Experiencing symptoms", "Assuming dependent role", "Achieving recovery and rehabilitation"],
+  a: 1
+},
+{
+  t: "During the first stage, the person usually:",
+  o: ["Recognizes that something is wrong", "Immediately becomes dependent", "Begins rehabilitation", "Returns to normal function"],
+  a: 0
+},
+{
+  t: "The second stage of illness is called:",
+  o: ["Experiencing symptoms", "Assuming sick role", "Assuming dependent role", "Achieving recovery"],
+  a: 1
+},
+{
+  t: "During the second stage, the person may:",
+  o: ["Use over-the-counter medication or seek medical care", "Begin rehabilitation", "Return completely to normal function", "Require no intervention"],
+  a: 0
+},
+{
+  t: "The third stage of illness is called:",
+  o: ["Experiencing symptoms", "Assuming sick role", "Assuming dependent role", "Achieving recovery"],
+  a: 2
+},
+{
+  t: "During the third stage, the patient recognizes the need for:",
+  o: ["No assistance", "Help and assistance from others, especially health care providers", "Only family planning", "Only self-treatment"],
+  a: 1
+},
+{
+  t: "The fourth stage of illness is:",
+  o: ["Experiencing symptoms", "Assuming sick role", "Assuming dependent role", "Achieving recovery and rehabilitation"],
+  a: 3
+},
+{
+  t: "A primary illness is one that:",
+  o: ["Develops from a preexisting condition", "Develops independently of another disease", "Has an unexplained cause", "Is always congenital"],
+  a: 1
+},
+{
+  t: "A secondary illness is a disorder that:",
+  o: ["Develops independently", "Develops from a preexisting condition", "Is always hereditary", "Is always terminal"],
+  a: 1
+},
+{
+  t: "An illness acquired from the genetic codes of one or both parents is:",
+  o: ["Primary illness", "Hereditary illness", "Idiopathic illness", "Secondary illness"],
+  a: 1
+},
+{
+  t: "A disorder present at birth due to faulty embryonic development is called:",
+  o: ["Hereditary illness", "Congenital disorder", "Secondary illness", "Idiopathic illness"],
+  a: 1
+},
+{
+  t: "An illness whose cause is unexplained is called:",
+  o: ["Terminal illness", "Idiopathic illness", "Hereditary illness", "Primary illness"],
+  a: 1
+},
+{
+  t: "In idiopathic illness, treatment focuses mainly on:",
+  o: ["Correcting a known cause", "Relieving signs and symptoms because the etiology is unknown", "Preventing genetic transmission", "Rehabilitation only"],
+  a: 1
+},
+{
+  t: "A terminal illness is one in which:",
+  o: ["There is potential for cure", "There is no potential for cure and it is eventually fatal", "The cause is unknown", "Symptoms are always mild"],
+  a: 1
+},
+{
+  t: "Morbidity refers to:",
+  o: ["Incidence of deaths", "The rate or number of people affected by a disease, disorder, or injury", "Recovery rate", "Number of health care providers"],
+  a: 1
+},
+{
+  t: "Mortality refers to:",
+  o: ["The number of people affected", "The incidence of deaths", "The number of symptoms", "The rate of rehabilitation"],
+  a: 1
+},
+{
+  t: "Health is simply the absence of disease or infirmity.",
+  o: ["True", "False"],
+  a: 1
+},
+{
+  t: "Each person may have an individual definition of health and illness.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "The definition of health may change from one stage to another across the continuum.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Disease is defined as the person's perception of symptoms.",
+  o: ["True", "False"],
+  a: 1
+},
+{
+  t: "Illness is the person's response to disease based on perception.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Potter and Perry describe health as a dynamic state.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "The Agent–Host–Environment model is primarily used for predicting illness.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "The Health–Illness Continuum views health as a constantly changing state.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Dunn's High-Level Wellness Model focuses on caring for the total person.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Genetic inheritance, age, and gender are included in the physical dimension.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Cognitive abilities and educational background belong to the intellectual dimension.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Housing and sanitation are environmental factors affecting health.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Family and culture can influence health practices and beliefs.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Primary prevention focuses on health promotion and specific protection against illness.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Immunization is an example of primary prevention.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Family planning is classified as tertiary prevention.",
+  o: ["True", "False"],
+  a: 1
+},
+{
+  t: "Secondary prevention focuses on early detection and prompt intervention.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Providing wound care is listed as an example of secondary prevention.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Tertiary prevention begins after diagnosis and treatment of illness.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Tertiary prevention focuses on rehabilitation and gradual resumption of functions.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Acute illness generally has a rapid onset and short duration.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Acute illness generally lasts more than three months.",
+  o: ["True", "False"],
+  a: 1
+},
+{
+  t: "Acute illness may result in complete recovery, death, or development into chronic disease.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Chronic illness generally has a slow onset.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Chronic illness may require a long period of care or support.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "The first stage of illness is experiencing symptoms.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "The second stage of illness is assuming the sick role.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "The third stage of illness is assuming the dependent role.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "The fourth stage is achieving recovery and rehabilitation.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "An idiopathic illness has an unexplained cause.",
+  o: ["True", "False"],
+  a: 0
+},
+{
+  t: "Mortality refers to the number or rate of people affected by a disease.",
+  o: ["True", "False"],
+  a: 1
+}
+];
+
+/* ============ ENGINE ============ */
+let questions, i, correct, wrong, answers, wrongSet, answered;
+let totalTime = 60*60, timeLeft, timerInterval;
+const LETTERS = ['A','B','C','D','E','F'];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function init(pool) {
+  questions = shuffle([...pool]);
+  i = 0; correct = 0; wrong = 0;
+  answers = new Array(questions.length).fill(null);
+  wrongSet = []; answered = 0;
+  timeLeft = totalTime;
+  document.getElementById('totalBadge').textContent = questions.length + ' سؤال';
+  startTimer();
+  render();
+}
+
+/* TIMER */
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+    document.getElementById('timerTxt').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+    const badge = document.getElementById('timerBadge');
+    if (timeLeft <= 120) { badge.className = 'timer-badge danger'; }
+    else if (timeLeft <= 300) { badge.className = 'timer-badge warn'; }
+    if (timeLeft <= 0) { clearInterval(timerInterval); finish(); }
+  }, 1000);
+}
+
+/* TOP UI */
+function updateTop() {
+  const total = questions.length;
+  document.getElementById('sCorrect').textContent = correct;
+  document.getElementById('sWrong').textContent = wrong;
+  document.getElementById('sRemain').textContent = Math.round(((total - answered) / total) * 100) + '%';
+  document.getElementById('progLabel').textContent = 'سؤال ' + (i + 1) + ' / ' + total;
+  document.getElementById('progFill').style.width = ((i + 1) / total * 100) + '%';
+  document.getElementById('prog-bar').style.width = ((i + 1) / total * 100) + '%';
+}
+
+/* RENDER QUESTION */
+function render() {
+  updateTop();
+  const q = questions[i];
+  document.getElementById('app').innerHTML = `
+    <div class="q-card">
+      <div class="q-header">
+        <div class="q-num">سؤال ${i + 1} / ${questions.length}</div>
+      </div>
+      <div class="q-text">${q.t}</div>
+      <div class="options">
+        ${q.o.map((o, idx) => `
+          <div class="opt" id="opt${idx}" onclick="choose(${idx})">
+            <div class="opt-letter">${LETTERS[idx] || idx + 1}</div>
+            ${o}
+          </div>
+        `).join('')}
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-skip" onclick="skip()"><i class="fa-solid fa-forward"></i> تخطي</button>
+      </div>
+    </div>`;
+}
+
+/* CHOOSE */
+function choose(v) {
+  if (answers[i] !== null) return;
+  answers[i] = v;
+  answered++;
+  const q = questions[i];
+  const ok = v === q.a;
+  ok ? correct++ : wrong++;
+  updateTop();
+
+  q.o.forEach((_, idx) => {
+    const el = document.getElementById('opt' + idx);
+    el.classList.add('disabled');
+    if (idx === q.a) el.classList.add('correct');
+    else if (idx === v) el.classList.add('wrong');
+  });
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback-bar ' + (ok ? 'ok' : 'no');
+  fb.innerHTML = ok
+    ? `<span class="feedback-icon">🎉</span> <span>صح ✔</span>`
+    : `<span class="feedback-icon">😔</span> <span>غلط ركز✖ </span>`;
+
+  const card = document.querySelector('.q-card');
+  card.querySelector('.options').after(fb);
+  if (q.exp) {
+    const exp = document.createElement('div');
+    exp.className = 'explanation';
+    exp.style.display = 'block';
+    exp.innerHTML = '<b>💬 شرح:</b> ' + q.exp;
+    fb.after(exp);
+  }
+
+  const navBtns = card.querySelector('.nav-btns');
+  navBtns.innerHTML = `<button class="btn btn-next" onclick="next()">
+    ${i < questions.length - 1 ? '<i class="fa-solid fa-arrow-left"></i> السؤال التالي' : '<i class="fa-solid fa-flag-checkered"></i> إنهاء الامتحان'}
+  </button>`;
+}
+
+/* SKIP */
+function skip() {
+  if (answers[i] === null) { answers[i] = -1; answered++; wrongSet.push(questions[i]); wrong++; updateTop(); }
+  next();
+}
+
+/* NEXT */
+function next() {
+  if (i < questions.length - 1) { i++; render(); window.scrollTo({top: 0, behavior: 'smooth'}); }
+  else finish();
+}
+
+/* FINISH */
+/* STUDENT INFO */
+let studentName = '';
+let studentCode = '';
+
+function showStudentForm() {
+  clearInterval(timerInterval);
+
+  document.getElementById('app').innerHTML = `
+    <div class="result-hero">
+      <div style="font-size:45px;margin-bottom:12px;">📝</div>
+
+      <div class="result-grade" style="color:var(--accent);">
+        بيانات الطالب
+      </div>
+
+      <div class="result-sub" style="margin-bottom:22px;">
+        من فضلك اكتب اسمك وكود الكشف قبل عرض النتيجة
+      </div>
+
+      <div style="text-align:right;margin-bottom:12px;">
+        <label style="display:block;font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px;">
+          الاسم
+        </label>
+
+        <input
+          id="studentNameInput"
+          type="text"
+          placeholder="اكتب اسمك بالكامل"
+          style="width:100%;padding:13px 14px;border:1px solid var(--bc);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;font-size:14px;outline:none;"
+        >
+      </div>
+
+      <div style="text-align:right;margin-bottom:18px;">
+        <label style="display:block;font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px;">
+          كود الكشف
+        </label>
+
+        <input
+          id="studentCodeInput"
+          type="text"
+          placeholder="اكتب كود الكشف"
+          style="width:100%;padding:13px 14px;border:1px solid var(--bc);border-radius:10px;background:var(--bg);color:var(--text);font-family:inherit;font-size:14px;outline:none;"
+        >
+      </div>
+
+      <div
+        id="studentError"
+        style="display:none;color:var(--danger);background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:10px;padding:10px;margin-bottom:12px;font-size:13px;font-weight:700;"
+      >
+        من فضلك اكتب الاسم وكود الكشف
+      </div>
+
+      <button class="btn btn-next" onclick="saveStudentInfo()">
+        ✅ تأكيد وعرض النتيجة
+      </button>
+    </div>
+  `;
+
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function saveStudentInfo() {
+  const name = document.getElementById('studentNameInput').value.trim();
+  const code = document.getElementById('studentCodeInput').value.trim();
+  const error = document.getElementById('studentError');
+
+  if (!name || !code) {
+    error.style.display = 'block';
+    return;
+  }
+
+  studentName = name;
+  studentCode = code;
+
+  finish(true);
+}
+
+
+/* FINISH */
+function finish(showResult = false) {
+
+  if (!showResult) {
+    showStudentForm();
+    return;
+  }
+
+  clearInterval(timerInterval);
+  const total = questions.length;
+  const score = Math.round((correct / total) * 100);
+
+  questions.forEach((q, idx) => {
+    if (answers[idx] !== q.a) wrongSet.push({...q, myAns: answers[idx]});
+  });
+
+  wrongSet = [...new Map(wrongSet.map(q => [q.t, q])).values()];
+
+  let grade, gradeColor;
+
+  if (score >= 90) {
+    grade = '🥇 ممتاز';
+    gradeColor = 'var(--success)';
+  }
+  else if (score >= 75) {
+    grade = '🥈 جيد جداً';
+    gradeColor = 'var(--accent)';
+  }
+  else if (score >= 60) {
+    grade = '🥉 جيد';
+    gradeColor = 'var(--warn)';
+  }
+  else {
+    grade = '📚 راجع تاني';
+    gradeColor = 'var(--danger)';
+  }
+
+  const circ = 2 * Math.PI * 45;
+  const offset = circ - (score / 100) * circ;
+
+  const reportHTML = questions.map((q, idx) => {
+    const ok = answers[idx] === q.a;
+
+    return `<div class="report-item ${ok ? 'ok' : 'no'}">
+      <div class="ri-q">${ok ? '✅' : '❌'} ${q.t}</div>
+
+      ${!ok ? `
+        <div class="ri-row">
+          <span class="ri-badge ri-yours">إجابتك</span>
+          ${answers[idx] >= 0 ? q.o[answers[idx]] : 'تم التخطي'}
+        </div>
+
+        <div class="ri-row">
+          <span class="ri-badge ri-right">الصحيح</span>
+          ${q.o[q.a]}
+        </div>
+      ` : ''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('prog-bar').style.width = '100%';
+
+  document.getElementById('app').innerHTML = `
+    <div class="result-hero">
+
+      <!-- بيانات الطالب -->
+      <div style="
+        background:var(--bg2);
+        border:1px solid var(--bc);
+        border-radius:12px;
+        padding:14px;
+        margin-bottom:20px;
+        text-align:right;
+      ">
+
+        <div style="
+          font-size:12px;
+          color:var(--text3);
+          margin-bottom:4px;
+        ">
+          اسم الطالب
+        </div>
+
+        <div style="
+          font-size:17px;
+          font-weight:900;
+          color:var(--text);
+          margin-bottom:12px;
+        ">
+          ${studentName}
+        </div>
+
+        <div style="
+          font-size:12px;
+          color:var(--text3);
+          margin-bottom:4px;
+        ">
+          كود الكشف
+        </div>
+
+        <div style="
+          font-size:16px;
+          font-weight:900;
+          color:var(--accent);
+        ">
+          ${studentCode}
+        </div>
+
+      </div>
+
+      <div class="score-ring">
+        <svg viewBox="0 0 110 110">
+
+          <circle
+            class="ring-bg"
+            cx="55"
+            cy="55"
+            r="45"
+            stroke-dasharray="${circ}"
+            stroke-dashoffset="0"
+          />
+
+          <circle
+            class="ring-fill"
+            cx="55"
+            cy="55"
+            r="45"
+            stroke-dasharray="${circ}"
+            stroke-dashoffset="${circ}"
+            style="stroke:${gradeColor}"
+            id="ringFill"
+          />
+
+        </svg>
+
+        <div class="score-num">${score}</div>
+        <div class="score-pct">%</div>
+      </div>
+
+      <div class="result-grade" style="color:${gradeColor}">
+        ${grade}
+      </div>
+
+      <div class="result-sub">
+        أجبت على ${answered} من ${total} سؤال
+      </div>
+
+      <div class="result-stats">
+
+        <div class="rs">
+          <div class="n" style="color:var(--success)">
+            ${correct}
+          </div>
+          <div class="l">صحيح</div>
+        </div>
+
+        <div class="rs">
+          <div class="n" style="color:var(--danger)">
+            ${wrong}
+          </div>
+          <div class="l">خطأ</div>
+        </div>
+
+        <div class="rs">
+          <div class="n" style="color:var(--accent)">
+            ${total - answered < 0 ? 0 : total - answered}
+          </div>
+          <div class="l">تخطي</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="result-actions">
+
+      ${
+        wrongSet.length
+        ? `
+          <button class="btn btn-retry" onclick="retryWrong()">
+            <i class="fa-solid fa-rotate-right"></i>
+            إعادة الخطأ (${wrongSet.length})
+          </button>
+        `
+        : ''
+      }
+
+      <button class="btn btn-home" onclick="init(QUESTIONS)">
+        <i class="fa-solid fa-shuffle"></i>
+        امتحان جديد عشوائي
+      </button>
+
+      <a
+        href="https://Nokhpa TEAM.github.io/exam/pediatric/index.html"
+        class="btn btn-home"
+        style="text-decoration:none;"
+      >
+        <i class="fa-solid fa-house"></i>
+        رجوع للمادة
+      </a>
+
+    </div>
+
+    <div style="margin-top:28px">
+
+      <div style="
+        font-size:14px;
+        font-weight:700;
+        margin-bottom:12px;
+        color:var(--text2);
+      ">
+        📋 تقرير مفصّل
+      </div>
+
+      ${reportHTML}
+
+    </div>
+  `;
+
+  setTimeout(() => {
+    document.getElementById('ringFill').style.strokeDashoffset = offset;
+  }, 100);
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+
+/* RETRY WRONG */
+function retryWrong() {
+  const pool = [...wrongSet];
+
+  questions = shuffle(pool);
+  i = 0;
+  correct = 0;
+  wrong = 0;
+
+  answers = new Array(questions.length).fill(null);
+
+  wrongSet = [];
+  answered = 0;
+  timeLeft = totalTime;
+
+  startTimer();
+  render();
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+/* THEME */
+const themeBtn = document.getElementById('themeBtn');
+let theme = localStorage.getItem('theme') || 'light';
+function applyTheme(t) {
+  theme = t;
+  document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : '');
+  themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', t);
+}
+applyTheme(theme);
+themeBtn.addEventListener('click', () => applyTheme(theme === 'dark' ? 'light' : 'dark'));
+
+/* START */
+init(QUESTIONS);
+</script>
+</body>
+</html>
